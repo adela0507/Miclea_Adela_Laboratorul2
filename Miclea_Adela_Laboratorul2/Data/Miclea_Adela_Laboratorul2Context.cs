@@ -19,5 +19,7 @@ namespace Miclea_Adela_Laboratorul2.Data
         public DbSet<Miclea_Adela_Laboratorul2.Models.Publisher> Publisher { get; set; }
 
         public DbSet<Miclea_Adela_Laboratorul2.Models.Author> Author { get; set; }
+
+        public DbSet<Miclea_Adela_Laboratorul2.Models.Category> Category { get; set; }
     }
 }

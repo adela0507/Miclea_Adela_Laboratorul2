@@ -10,7 +10,7 @@ using Miclea_Adela_Laboratorul2.Models;
 
 namespace Miclea_Adela_Laboratorul2.Pages.Books
 {
-    public class CreateModel : PageModel
+    public class CreateModel : BookCategoriesPageModel
     {
         private readonly Miclea_Adela_Laboratorul2.Data.Miclea_Adela_Laboratorul2Context _context;
 
@@ -21,8 +21,19 @@ namespace Miclea_Adela_Laboratorul2.Pages.Books
 
         public IActionResult OnGet()
         {
+            var authorList = _context.Author.Select(x => new
+            {
+                x.ID,
+                FullName = x.LastName + " " + x.FirstName
+            });
+           
+                       ViewData["AuthorID"] = new SelectList(authorList, "ID",
+"FullName");
             ViewData["PublisherID"] = new SelectList(_context.Set<Publisher>(), "ID",
 "PublisherName");
+            var book = new Book();
+            book.BookCategories = new List<BookCategory>();
+            PopulateAssignedCategoryData(_context, book);
             return Page();
         }
 
@@ -31,17 +42,47 @@ namespace Miclea_Adela_Laboratorul2.Pages.Books
         
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string[] selectedCategories)
         {
-          if (!ModelState.IsValid)
+            /*if (!ModelState.IsValid)
+              {
+                  return Page();
+              }
+
+              _context.Book.Add(Book);
+              await _context.SaveChangesAsync();
+
+              return RedirectToPage("./Index");
+ 
+            }*/
+          var newBook=Book;
+            if (selectedCategories != null)
             {
-                return Page();
+                newBook.BookCategories = new List<BookCategory>();
+                foreach (var cat in selectedCategories)
+                {
+                    var catToAdd = new BookCategory
+                    {
+                        CategoryID = int.Parse(cat)
+                    };
+                    newBook.BookCategories.Add(catToAdd);
+                }
             }
-
-            _context.Book.Add(Book);
+            /*if (await TryUpdateModelAsync<Book>(
+            newBook,
+            "Book",
+            i => i.Title, i => i.Author,
+            i => i.Price, i => i.PublishingDate, i => i.PublisherID))
+            {
+                _context.Book.Add(newBook);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
+            }*/
+            _context.Book.Add(newBook);
             await _context.SaveChangesAsync();
-
             return RedirectToPage("./Index");
+            PopulateAssignedCategoryData(_context, newBook);
+            return Page();
         }
     }
 }
