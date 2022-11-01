@@ -30,7 +30,7 @@ namespace Miclea_Adela_Laboratorul2.Pages.Books
                        ViewData["AuthorID"] = new SelectList(authorList, "ID",
 "FullName");
             ViewData["PublisherID"] = new SelectList(_context.Set<Publisher>(), "ID",
-"PublisherName");
+"PublisherName"); 
             var book = new Book();
             book.BookCategories = new List<BookCategory>();
             PopulateAssignedCategoryData(_context, book);
