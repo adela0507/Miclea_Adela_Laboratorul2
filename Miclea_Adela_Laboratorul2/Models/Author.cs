@@ -12,7 +12,7 @@ namespace Miclea_Adela_Laboratorul2.Models
         [Display(Name="FullName")]
         public string FullName { 
             get{ 
-                return FirstName + "" + LastName; 
+                return FirstName + " " + LastName; 
             }
         }
         public ICollection<Book>? Books { get; set; }
