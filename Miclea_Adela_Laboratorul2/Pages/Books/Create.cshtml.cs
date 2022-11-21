@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Miclea_Adela_Laboratorul2.Data;
 using Miclea_Adela_Laboratorul2.Models;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Miclea_Adela_Laboratorul2.Pages.Books
 {
+    [Authorize(Roles="Admin")]
     public class CreateModel : BookCategoriesPageModel
     {
         private readonly Miclea_Adela_Laboratorul2.Data.Miclea_Adela_Laboratorul2Context _context;

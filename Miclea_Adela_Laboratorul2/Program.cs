@@ -2,10 +2,28 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Miclea_Adela_Laboratorul2.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy =>
+   policy.RequireRole("Admin"));
+});
+
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(option => {
+    option.Conventions.AuthorizeFolder("/Books");
+    option.Conventions.AllowAnonymousToPage("/Books/Index");
+    option.Conventions.AllowAnonymousToPage("/Books/Details");
+    option.Conventions.AuthorizeFolder("/Members", "AdminPolicy");
+    option.Conventions.AuthorizeFolder("/Publishers", "AdminPolicy");
+    option.Conventions.AuthorizeFolder("/Categories", "AdminPolicy");
+
+
+
+});
 builder.Services.AddDbContext<Miclea_Adela_Laboratorul2Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Miclea_Adela_Laboratorul2Context") ?? throw new InvalidOperationException("Connection string 'Miclea_Adela_Laboratorul2Context' not found.")));
 
@@ -13,6 +31,7 @@ builder.Services.AddDbContext<LibraryIdentifyContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("Miclea_Adela_Laboratorul2Context") ?? throw new InvalidOperationException("Connectionstring 'Miclea_Adela_Laborator2Context' not found.")));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<LibraryIdentifyContext>();
 
 var app = builder.Build();
